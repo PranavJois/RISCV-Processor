@@ -18,16 +18,16 @@ Register_File Register_File_tb_inst (
 );
 initial begin
    RegWrite= 1;                // Enable writing
-   WriteRegister = 5'b00001;         // Write to register 1
+   WriteRegister = 5'b00001;         // stores in register 1
    WriteData= 32'd12345678;     // Write data: 12345678
    #10;                    // Wait 10 time units
 
    RA1 = 5'b00001;         // Read from register 1
-   RA2 = 5'b00001;         
+   RA2 = 5'b00001;         // it may show garbage value if this is not done
    #10;                    // Wait 10 time units
 
    RegWrite = 1;                // Enable writing
-   WriteRegister = 5'b00010;         // Write to register 2
+   WriteRegister = 5'b00010;         // stroes in register 2
    WriteData = 32'd87654321;     // Write data: 87654321
    #10;                    // Wait 10 time units
 
@@ -36,5 +36,8 @@ initial begin
    #10;                    // Wait 10 time units
 
    $finish;                // End the simulation
+end
+initial begin
+   $monitor("At time %d, RD1 = %d, RD2 = %d", $time, RD1, RD2);
 end
 
