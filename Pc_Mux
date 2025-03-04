@@ -4,5 +4,5 @@ module Pc_Mux(
     input wire        PCSrc,        // Selector signal (0 = PC+4, 1 = BranchAddr)
     output wire [31:0] PCNext     // Output: Selected PC value
 );
-    assign PCNext = (PCSrc) ? BranchAddr : PCPlus4;
+    assign PCNext = (PCSrc) ? Sum : PCPlus4;
 endmodule
