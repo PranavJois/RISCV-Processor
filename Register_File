@@ -4,7 +4,7 @@ module Register_File(
 		     input wire 	clk,RegWrite,
 		     input wire [4:0] 	RA1,RA2,WriteRegister,             
                                                     
-		     input wire [31:0] 	WD, //WriteData
+		     input wire [31:0] 	WriteData, //WriteData
 		     output wire [31:0] RD1,RD2 //read data(outputs)
 		     );
   /* inputs-RA1,RA2,WriteRegister,clk,RegWrite,WD
