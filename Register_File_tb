@@ -3,5 +3,17 @@ reg clk = 0;              // Clock signal intialised to 0
 reg RegWrite;             // Write Enabling
 reg [4:0] RA1, RA2;  // Read Addresses
 reg [4:0] WriteRegister;       // Write Address
-reg [31:0] WD;      // Write Data
+reg [31:0] WriteData;      // Write Data
 wire [31:0] RD1, RD2; // Read Data Outputs
+always #5 clk = ~clk;
+Register_File Register_File_tb_inst (
+    .clk(clk), 
+    .RegWrite(RegWrite), 
+    .RA1(RA1),    //creates an instance of Register_File and connects its inputs/outputs.
+    .RA2(RA2), 
+    .WriteRegister(WriteRegister), 
+    .WriteData(WriteData), 
+    .RD1(RD1), 
+    .RD2(RD2)
+);
+
