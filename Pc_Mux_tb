@@ -1,0 +1,43 @@
+`timescale 1ns / 1ps
+module Pc_Mux_tb;
+    reg [31:0] PCPlus4;
+    reg [31:0] Sum;
+    reg PCSrc;
+    wire [31:0] PCNext;
+                               // Instantiate the Pc_Mux module
+    Pc_Mux uut (
+        .PCPlus4(PCPlus4),
+        .Sum(Sum),
+        .PCSrc(PCSrc),
+        .PCNext(PCNext)
+    );
+
+    // Test sequence
+    initial begin
+        PCPlus4 = 32'd100;  // Test Case 1: PCSrc = 0, should select PCPlus4
+        Sum = 32'd200;
+        PCSrc = 0;
+        #10;
+
+        PCSrc = 1;  // Test Case 2: PCSrc = 1, should select Sum
+        #10;
+
+        PCPlus4 = 32'd400; // Test Case 3: Change values and test
+        Sum = 32'd800;
+        PCSrc = 0;
+        #10;
+
+        PCSrc = 1;    // Test Case 4: Select branch target (Sum)
+        #10;
+
+        // End simulation
+        $finish;
+    end
+
+    // Monitor output
+    initial begin
+        $monitor("At time %0t: PCSrc=%b, PCPlus4=%d, Sum=%d, PCNext=%d", 
+                 $time, PCSrc, PCPlus4, Sum, PCNext);
+    end
+
+endmodule
