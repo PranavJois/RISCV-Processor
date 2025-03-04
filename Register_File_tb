@@ -1,0 +1,7 @@
+module Register_File_tb;
+reg clk = 0;              // Clock signal intialised to 0
+reg WE3;             // Write Enable
+reg [4:0] RA1, RA2;  // Read Addresses
+reg [4:0] WA3;       // Write Address
+reg [31:0] WD3;      // Write Data
+wire [31:0] RD1, RD2; // Read Data Outputs
