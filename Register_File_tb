@@ -16,4 +16,25 @@ Register_File Register_File_tb_inst (
     .RD1(RD1), 
     .RD2(RD2)
 );
+initial begin
+   RegWrite= 1;                // Enable writing
+   WriteRegister = 5'b00001;         // Write to register 1
+   WriteData= 32'd12345678;     // Write data: 12345678
+   #10;                    // Wait 10 time units
+
+   RA1 = 5'b00001;         // Read from register 1
+   RA2 = 5'b00001;         
+   #10;                    // Wait 10 time units
+
+   RegWrite = 1;                // Enable writing
+   WriteRegister = 5'b00010;         // Write to register 2
+   WriteData = 32'd87654321;     // Write data: 87654321
+   #10;                    // Wait 10 time units
+
+   RA1 = 5'b00010;         // Read from register 2
+   RA2 = 5'b00010;
+   #10;                    // Wait 10 time units
+
+   $finish;                // End the simulation
+end
 
