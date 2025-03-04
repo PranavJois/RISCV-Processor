@@ -1,0 +1,46 @@
+`timescale 1ns / 1ps
+module Pc_Sum_tb;
+    reg [31:0] Pc;
+    reg [31:0] ImmGen;
+    wire [31:0] Sum;
+
+    // Instantiate the Pc_Sum module
+    Pc_Sum uut (
+        .Pc(Pc),
+        .ImmGen(ImmGen),
+        .Sum(Sum)
+    );
+
+    // Test sequence
+    initial begin
+        // Test Case 1: Pc = 100, ImmGen = 20 → Sum should be 120
+        Pc = 32'd100;
+        ImmGen = 32'd20;
+        #10;
+        
+        // Test Case 2: Pc = 1000, ImmGen = -50 (two's complement)
+        Pc = 32'd1000;
+        ImmGen = -32'd50;
+        #10;
+
+        // Test Case 3: Pc = 5000, ImmGen = 2000
+        Pc = 32'd5000;
+        ImmGen = 32'd2000;
+        #10;
+
+        // Test Case 4: Pc = max (32-bit), ImmGen = 1 (overflow check)
+        Pc = 32'hFFFFFFFF;
+        ImmGen = 32'd1;
+        #10;
+
+        // End simulation
+        $finish;
+    end
+
+    // Monitor output
+    initial begin
+        $monitor("At time %0t: Pc=%d, ImmGen=%d, Sum=%d", 
+                 $time, Pc, ImmGen, Sum);
+    end
+
+endmodule
