@@ -1,0 +1,6 @@
+module Pc_Sum(
+    input wire [31:0] pc,  
+    input wire [31:0] ImmGen,   
+    output wire [31:0] Sum 
+    assign Sum = A + B;
+endmodule

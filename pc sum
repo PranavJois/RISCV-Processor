@@ -1,7 +1,0 @@
-module pc_sum_mux(
-    input wire [31:0] pc,   // First input (e.g., PC or PC+4)
-    input wire [31:0] ImmGen,   // Second input (e.g., offset or constant 4)
-    output wire [31:0] Sum // Output result
-);
-    assign Sum = A + B;
-endmodule
