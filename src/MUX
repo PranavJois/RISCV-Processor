@@ -1,0 +1,7 @@
+module mux(A,B,S,C);
+input [31:0]A;      //declaring 32-bit inputs A,B
+input [31:0]B;
+input S;            //declaring select line S
+output [31:0]C;     //declaring 32-bit output
+assign C = (~S) ? A : B;   //2:1 MUX definition
+endmodule
