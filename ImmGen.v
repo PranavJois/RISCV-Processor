@@ -1,3 +1,5 @@
+//with ImmSrc ( input to select the correct immediate format.)
+
 module ImmGen (
     input  logic [31:0] instr,   // Instruction from IF stage
     input  logic [2:0] ImmSrc,   // Control signal to select immediate type
