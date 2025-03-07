@@ -1,4 +1,4 @@
-
+`timescale 1ns / 1ps
 module ALU_Decoder( 
     input wire        opb5,      // bit 5 of the opcode
     input wire [2:0]  funct3,    // instr[14:12]
@@ -41,37 +41,12 @@ endmodule
 
 
 
+(not needed-code) :-
 
 
+//`timescale 1ns / 1ps
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-`timescale 1ns / 1ps
-
-module ALU_Decoder(
+///module ALU_Decoder(
 		   input wire	    opb5, //bit 5 of the opcode
 		   input wire [2:0] funct3, // instr[14:12]
 		   input wire	    funct7b5, // bit 30 of instruction
