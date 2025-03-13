@@ -1,0 +1,21 @@
+module program_counter(PC, PC_NEXT,clk,rst);
+
+
+input [31:0] PC_NEXT;  //32 bit address of next instruction to be executed
+input clk,rst;         //clock and reset
+
+output reg [31:0] PC;   //32 bit address of current instruction to get executed 
+
+always@(posedge clk)    //during positive edge of clock cycle
+begin
+if(rst==1'b0)          //active low reset pin
+begin
+PC <= 32'h00000000;
+end
+else
+begin
+PC <=PC_NEXT;          //after next positive edge of clock, the next address is passed on to become current instruction address 
+end
+end
+
+endmodule
