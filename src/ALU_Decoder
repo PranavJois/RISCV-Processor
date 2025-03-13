@@ -1,13 +1,14 @@
 module alu_decoder(ALUOp, op5,funct3,funct7,ALUControl);
-input op5,funct7;
-input [1:0]ALUOp;
-input [2:0] funct3;
-output [2:0] ALUControl;
+//initializing inputs and outputs
+input op5,funct7;    //5th bit of opcode and function7
+input [1:0]ALUOp;    //ALUOp code
+input [2:0] funct3;  //function3
+output [2:0] ALUControl;  //ALUControl signal that is given to ALU to decide which operation to perform
 
-wire [1:0] concatenation;
-assign concatenation = {op5,funct7};
+wire [1:0] concatenation;    
+assign concatenation = {op5,funct7};  //concatenating op5 and funct7
 
-
+//designing the ALUControl signal using truth table with the help of ternary operator
 assign ALUControl = (ALUOp==2'b00)?3'b000:
                     (ALUOp==2'b01)?3'b001: 
                     ((ALUOp==2'b10) & (funct3 == 3'b010))?3'b101:
