@@ -1,10 +1,12 @@
-module instructionmem(rst,A,RD);
-input rst;
-input [31:0]A;
-output [31:0]RD;
-reg [31:0] mem [1023:0];
-assign RD = (~rst) ? {32{1'b0}} : mem[A[31:2]];
-initial begin 
-$readmemh("memfile.hex",mem);
-end
+module instructionmem(A,rst,RD);
+//initializing input and outputs 
+input [31:0]A;   //32 bit address of current instruction
+input rst;       //reset pin
+output [31:0]RD;  //32 bit machine code of instruction to be executed 
+
+reg [31:0] Mem [1023:0];   //defining 1024 registers called Mem of 32 bits each that store the machine code of instructions to be executed
+ 
+assign RD = (rst== 1'b0) ? 32'h00000000 : Mem[A[31:2]];  //fetch the data present in address A from memory
+
+
 endmodule
