@@ -1,8 +1,0 @@
-
-module mux2(p,q,r,s);
-input [31:0]p;      //declaring 32-bit inputs p,q
-input [31:0]q;
-input s;            //declaring select line s
-output [31:0]r;     //declaring 32-bit output
-assign r = (~s) ? p : q;   //2:1 MUX definition
-endmodule
