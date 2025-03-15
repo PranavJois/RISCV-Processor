@@ -1,0 +1,22 @@
+module data_memory(clk,WE,A,RD,WD);
+
+input clk,WE;         //clock and enable pin
+input [31:0] WD;      //Write data
+input [31:0]A;        //address storing data
+output [31:0] RD;     //read data
+
+reg [31:0] Data_Mem [1023:0];    //creating memory of 32 bits for 1024 registers 
+
+assign RD = (WD==1'b0)? Data_Mem[A]: 32'h00000000;   //assigning read functionality
+
+always @(posedge clk)
+begin
+if(WE==1)
+begin
+Data_Mem[A] <= WD;    //assigning write functionality based on enable pin
+end
+
+end
+
+
+endmodule
