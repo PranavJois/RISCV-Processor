@@ -1,0 +1,104 @@
+//including all other modules in the top module
+`include "program_counter.v"
+`include "instructionmem.v"
+`include "register_file.v"
+`include "sign_extender.v"
+`include "alu.v"
+`include "control_unit_top.v"
+`include "data_memory.v"
+`include "pc_adder.v"
+`include "mux.v"
+`include "mux2.v"
+
+
+module top_module(clk,rst);
+
+input clk,rst;
+wire [31:0] PC_Top,RD_Instr,RD1_Top,Imm_ext_Top,ALUResult,ReadData,PCplus4,muxresult,ALUb;    //interim wires to connect different modules 
+wire RegWrite;
+
+program_counter program_counter (
+.clk(clk),
+.rst(rst),
+.PC(PC_Top),
+.PC_NEXT(PCplus4)
+);
+
+instructionmem instructionmem(
+.rst(rst),
+.A(PC_Top),
+.RD(RD_Instr)
+);
+
+register_file register_file(
+.A1(RD_Instr[19:15]),    //source register 1
+.A2(),
+.A3(RD_Instr[11:7]),    //destination register
+.WE3(RegWrite),
+.WD3(muxresult),   //from data memory
+.clk(clk),
+.rst(rst),
+.RD1(RD1_Top),
+.RD2(p)           //to mux2
+);
+
+sign_extender sign_extender(
+.in(RD_Instr),
+.imm_ext(Imm_ext_Top)         
+);
+
+alu alu(
+.A(RD1_Top),
+.B(ALUb),                  //from mux2
+.ALUControl(),
+.Result(ALUResult),
+.N(),
+.Z(),
+.C(),
+.V()
+);
+
+control_unit_top control_unit_top(
+.op(RD_Instr[6:0]),     //opcode 
+.ImmSrc(),
+.RegWrite(RegWrite),    
+.ALUSrc(),
+.MemWrite(),
+.ResultSrc(),
+.Branch(),
+.funct3(RD_Instr[14:12]),    //funct7 
+.funct7(),
+.ALUControl()
+);
+
+data_memory data_memory(
+.clk(clk),
+.WE(MemWrite),      //from control unit
+.rst(rst),
+.A(ALUResult),     //from ALU
+.RD(ReadData),    //goes to register file
+.WD(RD2)          //from register file
+);
+
+pc_adder pc_adder(
+.a(PC),
+.b(32'd4),
+.c(PCplus4),
+.s()
+);
+
+mux mux(
+.A(Result),   //from ALU
+.B(ReadData),    //read data from data memory
+.S(),
+.C(muxresult)
+);
+
+mux2 mux2(
+.p(RD2),  //from register file
+.q(Imm_ext_Top),   //from sign extender
+.r(ALUb),
+.s(ALUSrc)  //from ALU
+);
+
+endmodule
