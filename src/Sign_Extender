@@ -1,0 +1,9 @@
+module sign_extender(in,imm_ext);
+input [31:0]in;       //32 bit op code
+output [31:0]imm_ext; //sign extended immediate value
+
+//based on MSB of opcode, sign extend the last 12 bits of opcode which is the immediate value
+assign imm_ext = (in[31]==1)? {{20{1'b1}},in[31:20]} :
+                 {{20{1'b0}},in[31:20]};
+                 
+endmodule
