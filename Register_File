@@ -1,30 +1,34 @@
-timescale 1ns / 1ps  //simulation time/precision time
+`timescale 1ns / 1ps  // Simulation time/precision time
 
 module Register_File(
-		     input wire 	clk,RegWrite,
-		     input wire [4:0] 	RA1,RA2,WriteRegister,             
-                                                    
-		     input wire [31:0] 	WriteData, //WriteData
-		     output wire [31:0] RD1,RD2 //read data(outputs)
-		     );
-  /* inputs-RA1,RA2,WriteRegister,clk,RegWrite,WD
-    outputs-RD1,RD2 */
-   reg [31:0] 				REG_MEM_BLOCK[31:0]; //32 register array with 32 bits
+    input wire clk, RegWrite,
+    input wire rst,  
+    input wire [4:0] RA1, RA2, WriteRegister,  // 5-bit addresses
+    input wire [31:0] WriteData,  // Data to write
+    output wire [31:0] RD1, RD2  // Read data outputs
+);
 
-                                       
-integer i;          // Initialize all 32 registers to 0x0 at simulation start
-initial begin
-    for (i = 0; i < 32; i = i + 1) begin
-        REG_MEM_BLOCK[i] = 32'h00000000;
+    // 32-register array, each 32 bits
+    reg [31:0] REG_MEM_BLOCK [31:0];
+
+    integer i;
+
+    // Initialize registers to zero
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            for (i = 0; i < 32; i = i + 1) begin
+                REG_MEM_BLOCK[i] <= 32'h00000000;
+            end
+        end else if (RegWrite && WriteRegister != 5'b00000) // Prevent writing to x0
+       begin
+            REG_MEM_BLOCK[WriteRegister] <= WriteData;   //write data of 'writedata' at address 'writeregister'
+        end
     end
-end
-   always@(posedge clk)
-     begin
-	if(RegWrite)
-	  REG_MEM_BLOCK[WriteRegister] <= WriteData;   //write writedata to register at address writeregister
-     end
 
-   assign RD1 = (RA1 != 0) ? REG_MEM_BLOCK[RA1] : 0;
-   assign RD2 = (RA2 != 0) ? REG_MEM_BLOCK[RA2] : 0;
-
+    // Read logic (no reset check needed here)
+    assign RD1 = REG_MEM_BLOCK[RA1];
+// rd1 gets what is at address ra1 in regmemblock
+    assign RD2 = REG_MEM_BLOCK[RA2];
+// rd2 gets what is at address ra2 in regmemblock
 endmodule
+
