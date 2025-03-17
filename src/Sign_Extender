@@ -1,9 +1,10 @@
-module sign_extender(in,imm_ext);
+module sign_extender(in,imm_ext,ImmSrc);
 input [31:0]in;       //32 bit op code
 output [31:0]imm_ext; //sign extended immediate value
+input ImmSrc;         //signal from control unit to determine whether I(load) or S(store) type instruction
 
 //based on MSB of opcode, sign extend the last 12 bits of opcode which is the immediate value
-assign imm_ext = (in[31]==1)? {{20{1'b1}},in[31:20]} :
-                 {{20{1'b0}},in[31:20]};
+assign imm_ext = (ImmSrc==1'b1)? ({{20{in[31]}},in[31:25],in[11:7]}):   //S type instr
+                 {{20{in[31]}},in[31:20]};                              //I type instr
                  
 endmodule
