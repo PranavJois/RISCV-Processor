@@ -14,22 +14,21 @@ wire[1:0] ALUOp;
 
 
 main_decoder main_decoder(
-.op(),
-.zero(),
-.RegWrite(),
-.MemWrite(),
-.ResultSrc(),
-.ALUSrc(),
-.ImmSrc(),
-.ALUOp(),
-.PCSrc()
+.op(op),
+.RegWrite(RegWrite),
+.MemWrite(MemWrite),
+.ResultSrc(ResultSrc),
+.ALUSrc(ALUSrc),
+.ImmSrc(ImmSrc),
+.ALUOp(ALUOp),
+.Branch(Branch)
 );
 
 alu_decoder alu_decoder(
-.ALUOp(),
-.op5(),
-.funct3(),
-.funct7(),
-.ALUControl()
+.ALUOp(ALUOp),
+.op(op),
+.funct3(funct3),
+.funct7(funct7),
+.ALUControl(ALUControl)
 );
 endmodule
