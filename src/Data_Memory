@@ -15,8 +15,11 @@ if(WE==1)
 begin
 Data_Mem[A] <= WD;    //assigning write functionality based on enable pin
 end
-
 end
 
+initial begin
+Data_Mem[28] = 32'h00000020;
+Data_Mem[40]=32'h00000002;
+end
 
 endmodule
