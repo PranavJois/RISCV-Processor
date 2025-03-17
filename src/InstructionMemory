@@ -8,5 +8,11 @@ reg [31:0] Mem [1023:0];   //defining 1024 registers called Mem of 32 bits each 
  
 assign RD = (rst== 1'b0) ? 32'h00000000 : Mem[A[31:2]];  //fetch the data present in address A from memory
 
-
+initial begin
+Mem[0] = 32'hFFC4A303;
+Mem[1] = 32'h00832383;
+Mem[2] = 32'h0064A423;
+Mem[3] = 32'h00B62423;
+Mem[4] = 32'h00B62E233;
+end
 endmodule
