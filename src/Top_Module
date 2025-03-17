@@ -66,9 +66,9 @@ control_unit_top control_unit_top(
 .ALUSrc(ALUSrc),              //goes to mux as select line
 .MemWrite(MemWrite),          //goes to data memory
 .ResultSrc(ResultSrc),        //select line for mux_datamem_to_reg
-.Branch(),
-.funct3(RD_Instr[14:12]),     //funct7 
-.funct7(),
+.Branch(Branch),
+.funct3(RD_Instr[14:12]),     //funct3
+.funct7(RD_Instr[31:25]),     //funct7
 .ALUControl(ALUControlTop)    //to ALU
 );
 
