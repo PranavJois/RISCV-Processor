@@ -8,14 +8,14 @@
 `include "data_memory.v"
 `include "pc_adder.v"
 `include "mux.v"
-`include "mux2.v"
-
 
 module top_module(clk,rst);
 
 input clk,rst;
-wire [31:0] PC_Top,RD_Instr,RD1_Top,Imm_ext_Top,ALUResult,ReadData,PCplus4,muxresult,ALUb;    //interim wires to connect different modules 
-wire RegWrite;
+wire [31:0] PC_Top,RD_Instr,RD1_Top,RD2_Top,Imm_ext_Top,ALUResult,ReadData,PCplus4,muxresult,ALUb;    //interim wires to connect different modules 
+wire RegWrite,MemWrite,ALUSrc,ResultSrc;
+wire [1:0]ImmSrc;
+wire [2:0]ALUControl_Top;
 
 program_counter program_counter (
 .clk(clk),
@@ -26,31 +26,32 @@ program_counter program_counter (
 
 instructionmem instructionmem(
 .rst(rst),
-.A(PC_Top),
-.RD(RD_Instr)
+.A(PC_Top),       //address of next instruction
+.RD(RD_Instr)     //machine code from instruction memory
 );
 
 register_file register_file(
-.A1(RD_Instr[19:15]),    //source register 1
-.A2(),
+.A1(RD_Instr[19:15]),   //source register 1
+.A2(RD_Instr[24:20]),   //source register 2
 .A3(RD_Instr[11:7]),    //destination register
-.WE3(RegWrite),
-.WD3(muxresult),   //from data memory
+.WE3(RegWrite),         //from control unit
+.WD3(muxresult),        //from mux_datamem_to_reg
 .clk(clk),
 .rst(rst),
-.RD1(RD1_Top),
-.RD2(p)           //to mux2
+.RD1(RD1_Top),          //source register 1 to ALU
+.RD2(RD2_Top)           //source register 2 to mux_register_to_alu
 );
 
 sign_extender sign_extender(
-.in(RD_Instr),
+.in(RD_Instr),                  //machine code from instr mem
+.ImmSrc(ImmSrc[0]),             //signal from control unit
 .imm_ext(Imm_ext_Top)         
 );
 
 alu alu(
-.A(RD1_Top),
-.B(ALUb),                  //from mux2
-.ALUControl(),
+.A(RD1_Top),                     //from register file
+.B(ALUb),                        //from mux_register_to_alu
+.ALUControl(ALUControl_Top),     //from control unit
 .Result(ALUResult),
 .N(),
 .Z(),
@@ -59,46 +60,46 @@ alu alu(
 );
 
 control_unit_top control_unit_top(
-.op(RD_Instr[6:0]),     //opcode 
-.ImmSrc(),
-.RegWrite(RegWrite),    
-.ALUSrc(),
-.MemWrite(),
-.ResultSrc(),
+.op(RD_Instr[6:0]),           //opcode 
+.ImmSrc(ImmSrc),
+.RegWrite(RegWrite),          //goes to register file
+.ALUSrc(ALUSrc),              //goes to mux as select line
+.MemWrite(MemWrite),          //goes to data memory
+.ResultSrc(ResultSrc),        //select line for mux_datamem_to_reg
 .Branch(),
-.funct3(RD_Instr[14:12]),    //funct7 
+.funct3(RD_Instr[14:12]),     //funct7 
 .funct7(),
-.ALUControl()
+.ALUControl(ALUControlTop)    //to ALU
 );
 
 data_memory data_memory(
 .clk(clk),
-.WE(MemWrite),      //from control unit
+.WE(MemWrite),        //from control unit
 .rst(rst),
-.A(ALUResult),     //from ALU
-.RD(ReadData),    //goes to register file
-.WD(RD2)          //from register file
+.A(ALUResult),        //from ALU
+.RD(ReadData),        //goes to register file
+.WD(RD2_Top)          //from register file
 );
 
 pc_adder pc_adder(
-.a(PC),
+.a(PC_Top),
 .b(32'd4),
 .c(PCplus4),
 .s()
 );
 
-mux mux(
-.A(Result),   //from ALU
+mux mux_datamem_to_reg(
+.A(Result),      //from ALU
 .B(ReadData),    //read data from data memory
-.S(),
-.C(muxresult)
+.S(ResultSrc),   //select line from control unit 
+.C(muxresult)    //output of mux to register file
 );
 
-mux2 mux2(
-.p(RD2),  //from register file
-.q(Imm_ext_Top),   //from sign extender
-.r(ALUb),
-.s(ALUSrc)  //from ALU
+mux mux_register_to_alu(
+.A(RD2_Top),        //from register file
+.B(Imm_ext_Top),    //from sign extender
+.C(ALUb),           //output of mux as second input to ALU
+.S(ALUSrc)          //from ALU (select line)
 );
 
 endmodule
