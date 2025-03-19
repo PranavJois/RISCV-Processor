@@ -12,7 +12,7 @@
 module top_module(clk,rst);
 
 input clk,rst;
-wire [31:0] PC_Top,RD_Instr,RD1_Top,RD2_Top,Imm_ext_Top,ALUResult,ReadData,PCplus4,muxresult,ALUb;    //interim wires to connect different modules 
+wire [31:0] PC_Top,RD_Instr,RD1_Top,RD2_Top,Imm_ext_Top,ALUResult,ReadData,PCplus4,muxresult,ALUb,PCTarget;    //interim wires to connect different modules 
 wire RegWrite,MemWrite,ALUSrc,ResultSrc;
 wire [1:0]ImmSrc;
 wire [2:0]ALUControl_Top;
@@ -84,8 +84,7 @@ data_memory data_memory(
 pc_adder pc_adder(
 .a(PC_Top),
 .b(32'd4),
-.c(PCplus4),
-.s()
+.c(PCplus4)
 );
 
 mux mux_datamem_to_reg(
@@ -100,6 +99,19 @@ mux mux_register_to_alu(
 .B(Imm_ext_Top),    //from sign extender
 .C(ALUb),           //output of mux as second input to ALU
 .S(ALUSrc)          //from ALU (select line)
+);
+
+mux mux_pc(
+.A(PCplus4),        
+.B(PCTarget),  
+.C(PC_Top),           
+.S(PCSrc)          
+);
+
+pc_adder pc_target(
+.a(PC_Top),
+.b(Imm_ext_Top),
+.c(PCTarget)
 );
 
 endmodule
